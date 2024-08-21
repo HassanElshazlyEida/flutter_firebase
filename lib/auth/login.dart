@@ -91,11 +91,13 @@ class _LoginState extends State<Login> {
                    ],
                  ),
                ),
-                const Row(
+                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                     Text('Don’t have an account?',style: TextStyle(color: Color(0xff1F41BB),fontWeight: FontWeight.bold),),
-                     Text(' Sign up',style: TextStyle(color: Color(0xffC70039),fontWeight: FontWeight.bold),),
+                     const Text('Don’t have an account?',style: TextStyle(color: Color(0xff1F41BB),fontWeight: FontWeight.bold),),
+                      TextButton(onPressed: (){
+                        Navigator.pushNamed(context, '/signup');
+                      }, child: const Text('Sign up',style: TextStyle(color: Color(0xffC70039),fontWeight: FontWeight.bold),))
                   ],
                 )
                  
