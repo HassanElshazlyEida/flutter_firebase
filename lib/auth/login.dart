@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase/component/custom_text_field.dart';
+import 'package:flutter_firebase/component/custome_elevated_button.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -8,6 +10,9 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,43 +43,11 @@ class _LoginState extends State<Login> {
               ),
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
-                child: const TextField(
-                  decoration: InputDecoration(
-                    fillColor: Color(0xffF1F4FF),
-                    filled: true,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(7)),
-                      borderSide: BorderSide.none
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(7)),
-                      borderSide: BorderSide(
-                        color: Color(0xff1F41BB), // Color when focused
-                      ),
-                    ),
-                    labelText: 'Email',
-                  ),
-                ),
+                child: CustomTextField(text: 'Email',controller: emailController,),
               ),
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
-                child: const TextField(
-                   decoration: InputDecoration(
-                    fillColor: Color(0xffF1F4FF),
-                    filled: true,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(7)),
-                      borderSide: BorderSide.none
-                    ),
-                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(7)),
-                      borderSide: BorderSide(
-                        color: Color(0xff1F41BB), // Color when focused
-                      ),
-                    ),
-                    labelText: 'Password',
-                  ),
-                ),
+                child: CustomTextField(text: 'Password',controller: passwordController,),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -89,70 +62,28 @@ class _LoginState extends State<Login> {
                   margin: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
                  child: Column(
                    children: [
-                     Container(
+                     SizedBox(
                       width: double.infinity,
                      
-                       child: ElevatedButton(
-                        
-                        style:  ElevatedButton.styleFrom(
-                          shadowColor: const Color(0xff1F41BB),
-                          backgroundColor: const Color(0xff1F41BB),
-                          shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        ),
-                          onPressed: () {
-                            // Add Firebase login code here
-                          },
-                          child: const Text(
-                            'Sign in',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                       
-                              
-                            ),
-                          ),
-                        ),
+                       child: CustomElevatedButton(
+                        text: 'Sign in',
+                        backgroundColor:const  Color(0xff1F41BB),
+                        onPressed: () {
+                         
+                        },
+                        )
                      ),
                      const SizedBox(height: 15,),
-                      Container(
+                      SizedBox(
                       width: double.infinity,
                   
-                       child: ElevatedButton(
-                        
-                        style:  ElevatedButton.styleFrom(
-                          shadowColor: const Color(0xffC70039),
-                          backgroundColor: const Color(0xffC70039),
-                          shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        ),
-                          onPressed: () {
-                            // Add Firebase login code here
-                          },
-                          child:  Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                               const Text(
-                                'Sign in with Google',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                                     
-                                  
-                                ),
-                              ),
-                             
-                              Container(
-                                margin:  const EdgeInsets.only(left: 10),
-                                child: Image.asset('lib/images/google.png',height: 20,width: 20,),
-                              ),
-                            ],
-                          ),
-                        ),
+                       child: CustomElevatedButton(
+                        text: 'Sign in with Google',
+                        backgroundColor:const  Color(0xffC70039),
+                        onPressed: () {
+                        },
+                        appendedWidget: Image.asset('lib/images/google.png',height: 20,width: 20,),
+                        )
                      ),
                       
                    ],
