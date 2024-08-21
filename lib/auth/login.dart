@@ -49,6 +49,7 @@ class _LoginState extends State<Login> {
                 margin: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
                 child: CustomTextField(text: 'Password',controller: passwordController,),
               ),
+              
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
