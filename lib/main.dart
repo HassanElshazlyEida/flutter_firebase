@@ -47,7 +47,7 @@ class AppView extends StatelessWidget {
   @override
  Widget build(BuildContext context) {
     return   MaterialApp(
-      home: const SignUp(),
+      home: const Login(),
       routes: {
         '/login': (context) => const Login(),
         '/signup': (context) =>  const SignUp(),

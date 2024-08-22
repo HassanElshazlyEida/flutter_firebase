@@ -10,7 +10,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc({required AuthFirebaseServiceImp authRepository})  : 
   _authRepository = authRepository,
    super(AuthInitial()) {
-    
+
     // Register
     on<SignUpRequested>((event, emit) async {
       print(event);
@@ -24,18 +24,33 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           return;
         }else {        
           authenticatedUser.leftMap((user) => emit(AuthAuthenticated(user)));
-         
         }
-        //   authenticatedUser.fold(
-        //   (user) => emit(AuthAuthenticated(user)),
-        //   (error) => emit(AuthError(error)),
-        // );
+ 
 
       } catch (e) {
         print(e.toString());
         emit(AuthError(e.toString()));
       }
     });
-
+ 
+  on<SignInRequested>((event, emit) async {
+    emit(AuthLoading());
+    try {
+      var authenticatedUser = await _authRepository.login(event.email, event.password);
+      if(authenticatedUser.isRight()) {
+        emit(AuthError(authenticatedUser.fold((l) => '', (r) => r)));
+        print(authenticatedUser.fold((l) => '', (r) => r));
+        print('event error');
+        return;
+      }else {        
+        authenticatedUser.leftMap((user) => emit(AuthAuthenticated(user)));
+      }
+    } catch (e) {
+      print('catch event error');
+      print(e.toString());
+      emit(AuthError(e.toString()));
+    }
+  });
+  
   }
 }

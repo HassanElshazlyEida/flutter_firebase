@@ -9,7 +9,7 @@ class SignInRequested extends AuthEvent {
   final String email;
   final String password;
 
-  SignInRequested(this.email, this.password);
+  SignInRequested({required this.email, required this.password});
 }
 
 class SignUpRequested extends AuthEvent {

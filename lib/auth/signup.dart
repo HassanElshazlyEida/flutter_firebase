@@ -5,6 +5,7 @@ import 'package:flutter_firebase/bloc/events/auth_event.dart';
 import 'package:flutter_firebase/bloc/states/auth_state.dart';
 import 'package:flutter_firebase/component/custom_text_field.dart';
 import 'package:flutter_firebase/component/custome_elevated_button.dart';
+import 'package:flutter_firebase/component/helpers/helper.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -24,14 +25,7 @@ class _SignUpState extends State<SignUp> {
     body: BlocConsumer<AuthBloc, AuthState>(
           listener: (context, state) {
           if (state is AuthError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-              content: Text(state.message),
-              behavior: SnackBarBehavior.floating,
-              margin: const  EdgeInsets.only(top: 10, left: 10, right: 10)
-              ),
-              
-            );
+            Helper.showMessage(context, state.message);
           } else if (state is AuthAuthenticated) {
             print('Authenticated here');
             Navigator.pushNamed(context, '/home');

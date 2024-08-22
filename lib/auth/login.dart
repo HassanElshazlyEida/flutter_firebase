@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_firebase/bloc/auth/auth_bloc.dart';
+import 'package:flutter_firebase/bloc/events/auth_event.dart';
+import 'package:flutter_firebase/bloc/states/auth_state.dart';
 import 'package:flutter_firebase/component/custom_text_field.dart';
 import 'package:flutter_firebase/component/custome_elevated_button.dart';
+import 'package:flutter_firebase/component/helpers/helper.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -16,38 +21,64 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
- 
-      body: Column(
-            
+      body: BlocConsumer<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state is AuthError) {
+            Helper.showMessage(context, state.message);
+          } else if (state is AuthAuthenticated) {
+            Navigator.pushNamed(context, '/home');
+          }else {
+            print(state);
+          }
+        },
+        builder: (context, state) {
+          if (state is AuthLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          return Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // create clip path with background blue
               ClipPath(
-                clipper:  const MyClipper(),
+                clipper: const MyClipper(),
                 child: Container(
                   height: 250,
                   width: double.infinity,
                   color: const Color(0xff1F41BB),
                 ),
               ),
-              Image.asset('lib/images/logo.png',height: 100,width: 100,),
+              Image.asset(
+                'lib/images/logo.png',
+                height: 100,
+                width: 100,
+              ),
               Container(
-                margin: const EdgeInsets.only(top: 20,bottom: 50),
-                child: const  SizedBox(
+                margin: const EdgeInsets.only(top: 20, bottom: 50),
+                child: const SizedBox(
                   width: 250,
-                  child:  Text('Welcome back you’ve been missed!',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,)),
+                  child: Text('Welcome back you’ve been missed!',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      )),
                 ),
-
               ),
               Container(
-                margin: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
-                child: CustomTextField(text: 'Email',controller: emailController,),
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: CustomTextField(
+                  text: 'Email',
+                  controller: emailController,
+                ),
               ),
               Container(
-                margin: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
-                child: CustomTextField(text: 'Password',controller: passwordController,),
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: CustomTextField(
+                  text: 'Password',
+                  controller: passwordController,
+                ),
               ),
 
               Row(
@@ -55,57 +86,77 @@ class _LoginState extends State<Login> {
                 children: [
                   Container(
                     margin: const EdgeInsets.only(right: 20),
-                    child: const Text('Forgot your password?',style: TextStyle(color: Color(0xff1F41BB),fontWeight: FontWeight.bold),),
+                    child: const Text(
+                      'Forgot your password?',
+                      style: TextStyle(
+                          color: Color(0xff1F41BB),
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ],
               ),
-              
-               Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
-                 child: Column(
-                   children: [
-                     SizedBox(
-                      width: double.infinity,
-                     
-                       child: CustomElevatedButton(
-                        text: 'Sign in',
-                        backgroundColor:const  Color(0xff1F41BB),
-                        onPressed: () {
-                         
-                        },
-                        )
-                     ),
-                     const SizedBox(height: 15,),
-                      SizedBox(
-                      width: double.infinity,
-                  
-                       child: CustomElevatedButton(
-                        text: 'Sign in with Google',
-                        backgroundColor:const  Color(0xffC70039),
-                        onPressed: () {
-                        },
-                        appendedWidget: Image.asset('lib/images/google.png',height: 20,width: 20,),
-                        )
-                     ),
-                      
-                   ],
-                 ),
-               ),
-                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+
+              Container(
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                child: Column(
                   children: [
-                     const Text('Don’t have an account?',style: TextStyle(color: Color(0xff1F41BB),fontWeight: FontWeight.bold),),
-                      TextButton(onPressed: (){
-                        Navigator.pushNamed(context, '/signup');
-                      }, child: const Text('Sign up',style: TextStyle(color: Color(0xffC70039),fontWeight: FontWeight.bold),))
+                    SizedBox(
+                        width: double.infinity,
+                        child: CustomElevatedButton(
+                          text: 'Sign in',
+                          backgroundColor: const Color(0xff1F41BB),
+                          onPressed: () {
+                            BlocProvider.of<AuthBloc>(context).add(
+                              SignInRequested(
+                                email: emailController.text,
+                                password: passwordController.text,
+                              ),
+                            );
+                          },
+                        )),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    SizedBox(
+                        width: double.infinity,
+                        child: CustomElevatedButton(
+                          text: 'Sign in with Google',
+                          backgroundColor: const Color(0xffC70039),
+                          onPressed: () {},
+                          appendedWidget: Image.asset(
+                            'lib/images/google.png',
+                            height: 20,
+                            width: 20,
+                          ),
+                        )),
                   ],
-                )
-                 
-              
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Don’t have an account?',
+                    style: TextStyle(
+                        color: Color(0xff1F41BB), fontWeight: FontWeight.bold),
+                  ),
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/signup');
+                      },
+                      child: const Text(
+                        'Sign up',
+                        style: TextStyle(
+                            color: Color(0xffC70039),
+                            fontWeight: FontWeight.bold),
+                      ))
+                ],
+              )
             ],
-          ),
-          
-         
+          );
+        },
+      ),
     );
   }
 }
@@ -117,7 +168,8 @@ class MyClipper extends CustomClipper<Path> {
   Path getClip(Size size) {
     final path = Path();
     path.lineTo(0, size.height - 50);
-    path.quadraticBezierTo(size.width / 2, size.height, size.width, size.height - 50);
+    path.quadraticBezierTo(
+        size.width / 2, size.height, size.width, size.height - 50);
     path.lineTo(size.width, 0);
     path.close();
     return path;

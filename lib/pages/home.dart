@@ -38,7 +38,7 @@ class Home extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Welcome ${state.user.username}'),
+                  Text('Welcome ${state.user.email}'),
                 
                 ],
               ),
