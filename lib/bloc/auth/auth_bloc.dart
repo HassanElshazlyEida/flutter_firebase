@@ -10,7 +10,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc({required AuthFirebaseServiceImp authRepository})  : 
   _authRepository = authRepository,
    super(AuthInitial()) {
-
+    
+    // Register
     on<SignUpRequested>((event, emit) async {
       print(event);
       emit(AuthLoading());
