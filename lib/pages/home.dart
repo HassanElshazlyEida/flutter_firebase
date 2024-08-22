@@ -33,6 +33,7 @@ class Home extends StatelessWidget {
           return Scaffold(
             appBar: AppBar(
               title: const Text('Home'),
+              automaticallyImplyLeading: false,
             ),
             body: Center(
               child: Column(

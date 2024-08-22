@@ -78,6 +78,7 @@ class _LoginState extends State<Login> {
                 child: CustomTextField(
                   text: 'Password',
                   controller: passwordController,
+                  isPassword: true,
                 ),
               ),
 

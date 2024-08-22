@@ -89,6 +89,8 @@ class _SignUpState extends State<SignUp> {
                 child: CustomTextField(
                   text: 'Password',
                   controller: passwordController,
+                  isPassword: true,
+                  
                 ),
               ),
 
