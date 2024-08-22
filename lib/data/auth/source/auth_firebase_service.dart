@@ -29,7 +29,11 @@ class AuthFirebaseServiceImp implements AuthFirebaseService {
         username: user.username,
         )
       );
-    } catch (e) {
+    }
+    on FirebaseAuthException catch (e) {
+      return right(e.message.toString());
+    }
+     catch (e) {
       return right(e.toString());
     }
   }
@@ -48,7 +52,10 @@ class AuthFirebaseServiceImp implements AuthFirebaseService {
           email: email,
         )
       );
-    } catch (e) {
+    }  on FirebaseAuthException catch (e) {
+      return right(e.message.toString());
+    }
+    catch (e) {
       print('catch error');
       return right(e.toString());
     }
