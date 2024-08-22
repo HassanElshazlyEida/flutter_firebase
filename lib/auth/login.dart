@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_firebase/bloc/auth/auth_bloc.dart';
 import 'package:flutter_firebase/bloc/events/auth_event.dart';
 import 'package:flutter_firebase/bloc/states/auth_state.dart';
-import 'package:flutter_firebase/component/custom_text_field.dart';
 import 'package:flutter_firebase/component/custome_elevated_button.dart';
+import 'package:flutter_firebase/component/helpers/form_helper.dart';
 import 'package:flutter_firebase/component/helpers/helper.dart';
 
 class Login extends StatefulWidget {
@@ -17,6 +17,7 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();  
 
   @override
   Widget build(BuildContext context) {
@@ -35,126 +36,124 @@ class _LoginState extends State<Login> {
           if (state is AuthLoading) {
             return const Center(child: CircularProgressIndicator());
           }
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // create clip path with background blue
-              ClipPath(
-                clipper: const MyClipper(),
-                child: Container(
-                  height: 250,
-                  width: double.infinity,
-                  color: const Color(0xff1F41BB),
-                ),
-              ),
-              Image.asset(
-                'lib/images/logo.png',
-                height: 100,
-                width: 100,
-              ),
-              Container(
-                margin: const EdgeInsets.only(top: 20, bottom: 50),
-                child: const SizedBox(
-                  width: 250,
-                  child: Text('Welcome back you’ve been missed!',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      )),
-                ),
-              ),
-              Container(
-                margin:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: CustomTextField(
-                  text: 'Email',
-                  controller: emailController,
-                ),
-              ),
-              Container(
-                margin:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: CustomTextField(
-                  text: 'Password',
-                  controller: passwordController,
-                  isPassword: true,
-                ),
-              ),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(right: 20),
-                    child: const Text(
-                      'Forgot your password?',
-                      style: TextStyle(
-                          color: Color(0xff1F41BB),
-                          fontWeight: FontWeight.bold),
-                    ),
+          return Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // create clip path with background blue
+                ClipPath(
+                  clipper: const MyClipper(),
+                  child: Container(
+                    height: 250,
+                    width: double.infinity,
+                    color: const Color(0xff1F41BB),
                   ),
-                ],
-              ),
-
-              Container(
-                margin:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                child: Column(
+                ),
+                Image.asset(
+                  'lib/images/logo.png',
+                  height: 100,
+                  width: 100,
+                ),
+                Container(
+                  margin: const EdgeInsets.only(top: 20, bottom: 50),
+                  child: const SizedBox(
+                    width: 250,
+                    child: Text('Welcome back you’ve been missed!',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        )),
+                  ),
+                ),
+                Container(
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    child: FormHelper.email(emailController),
+                ),
+                Container(
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  child: FormHelper.password(passwordController),
+                ),
+            
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    SizedBox(
-                        width: double.infinity,
-                        child: CustomElevatedButton(
-                          text: 'Sign in',
-                          backgroundColor: const Color(0xff1F41BB),
-                          onPressed: () {
-                            BlocProvider.of<AuthBloc>(context).add(
-                              SignInRequested(
-                                email: emailController.text,
-                                password: passwordController.text,
-                              ),
-                            );
-                          },
-                        )),
-                    const SizedBox(
-                      height: 15,
+                    Container(
+                      margin: const EdgeInsets.only(right: 20),
+                      child: const Text(
+                        'Forgot your password?',
+                        style: TextStyle(
+                            color: Color(0xff1F41BB),
+                            fontWeight: FontWeight.bold),
+                      ),
                     ),
-                    SizedBox(
-                        width: double.infinity,
-                        child: CustomElevatedButton(
-                          text: 'Sign in with Google',
-                          backgroundColor: const Color(0xffC70039),
-                          onPressed: () {},
-                          appendedWidget: Image.asset(
-                            'lib/images/google.png',
-                            height: 20,
-                            width: 20,
-                          ),
-                        )),
                   ],
                 ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    'Don’t have an account?',
-                    style: TextStyle(
-                        color: Color(0xff1F41BB), fontWeight: FontWeight.bold),
+            
+                Container(
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                          width: double.infinity,
+                          child: CustomElevatedButton(
+                            text: 'Sign in',
+                            backgroundColor: const Color(0xff1F41BB),
+                            onPressed: () {
+                              if (_formKey.currentState?.validate() ?? false) {
+                                BlocProvider.of<AuthBloc>(context).add(
+                                  SignInRequested(
+                                    email: emailController.text,
+                                    password: passwordController.text,
+                                  ),
+                                );
+                              }
+                            },
+                          )),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      SizedBox(
+                          width: double.infinity,
+                          child: CustomElevatedButton(
+                            text: 'Sign in with Google',
+                            backgroundColor: const Color(0xffC70039),
+                            onPressed: () {},
+                            appendedWidget: Image.asset(
+                              'lib/images/google.png',
+                              height: 20,
+                              width: 20,
+                            ),
+                          )),
+                    ],
                   ),
-                  TextButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/signup');
-                      },
-                      child: const Text(
-                        'Sign up',
-                        style: TextStyle(
-                            color: Color(0xffC70039),
-                            fontWeight: FontWeight.bold),
-                      ))
-                ],
-              )
-            ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Don’t have an account?',
+                      style: TextStyle(
+                          color: Color(0xff1F41BB), fontWeight: FontWeight.bold),
+                    ),
+                    TextButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/signup');
+                        },
+                        child: const Text(
+                          'Sign up',
+                          style: TextStyle(
+                              color: Color(0xffC70039),
+                              fontWeight: FontWeight.bold),
+                        ))
+                  ],
+                )
+              ],
+            ),
           );
         },
       ),
