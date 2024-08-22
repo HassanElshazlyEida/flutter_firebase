@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_firebase/bloc/auth/auth_bloc.dart';
 import 'package:flutter_firebase/bloc/states/auth_state.dart';
+import 'package:flutter_firebase/component/helpers/helper.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -15,11 +16,7 @@ class Home extends StatelessWidget {
         print('home');
         print(state.toString());
         if (state is AuthError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-            ),
-          );
+          Helper.showMessage(context, state.message);
         }else if (state is AuthUnAuthenticated) {
           Navigator.of(context).pushReplacementNamed('/login');
         }else if (state is AuthAuthenticated) {
