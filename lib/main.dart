@@ -4,30 +4,54 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_firebase/auth/login.dart';
 import 'package:flutter_firebase/auth/signup.dart';
 import 'package:flutter_firebase/bloc/auth/auth_bloc.dart';
-import 'package:flutter_firebase/data/auth/repository/auth_repository_imp.dart';
+import 'package:flutter_firebase/bloc/observers/global_observer.dart';
 import 'package:flutter_firebase/data/auth/source/auth_firebase_service.dart';
+import 'package:flutter_firebase/pages/home.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
   );
-  runApp(const MainApp());
+
+  Bloc.observer = GlobalObserver();
+
+  final authenticationRepository = AuthFirebaseServiceImp();
+
+  runApp(MainApp(authenticationRepository: authenticationRepository));
 }
 
 class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+  final AuthFirebaseServiceImp _authenticationRepository;
+
+  const MainApp({
+    required AuthFirebaseServiceImp authenticationRepository,
+    super.key,
+  }) : _authenticationRepository = authenticationRepository;
+
 
   @override
-  Widget build(BuildContext context) {
-    return   MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: BlocProvider(
-        create: (context) => AuthBloc(AuthRepositoryImp(AuthFirebaseServiceImp())),
-        child: const SignUp(),
+   Widget build(BuildContext context) {
+    return RepositoryProvider.value(
+      value: _authenticationRepository,
+      child: BlocProvider(
+        create: (_) => AuthBloc(authRepository: _authenticationRepository),
+        child: const AppView(),
       ),
+    );
+  }
+  
+}
+class AppView extends StatelessWidget {
+  const AppView({super.key});
+
+  @override
+ Widget build(BuildContext context) {
+    return   MaterialApp(
+      home: const SignUp(),
       routes: {
         '/login': (context) => const Login(),
         '/signup': (context) =>  const SignUp(),
+        '/home': (context) => const Home(),
       },
     );
   }

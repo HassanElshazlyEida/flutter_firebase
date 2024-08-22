@@ -13,6 +13,7 @@ class CustomTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return   TextField(
+        controller: controller,
         decoration: InputDecoration(
           fillColor: Color(0xffF1F4FF),
           filled: true,
@@ -27,6 +28,7 @@ class CustomTextField extends StatelessWidget {
             ),
           ),
           labelText: text,
+       
         ),
       );
   }

@@ -14,7 +14,7 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-final TextEditingController emailController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
@@ -33,13 +33,16 @@ final TextEditingController emailController = TextEditingController();
               
             );
           } else if (state is AuthAuthenticated) {
-            Navigator.of(context).pushReplacementNamed('/home');
+            print('Authenticated here');
+            Navigator.pushNamed(context, '/home');
+          }else {
+            print(state);
           }
         },
         builder: (context, state) {         
-           if (state is AuthLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
+            if (state is AuthLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
             return Column(  
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -74,7 +77,7 @@ final TextEditingController emailController = TextEditingController();
                     const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                 child: CustomTextField(
                   text: 'username',
-                  controller: emailController,
+                  controller: usernameController,
                 ),
               ),
               Container(
@@ -82,7 +85,7 @@ final TextEditingController emailController = TextEditingController();
                     const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                 child: CustomTextField(
                   text: 'Email',
-                  controller: passwordController,
+                  controller: emailController,
                 ),
               ),
 
@@ -107,12 +110,12 @@ final TextEditingController emailController = TextEditingController();
                           backgroundColor: const Color(0xff1F41BB),
                           onPressed: () {
                              BlocProvider.of<AuthBloc>(context).add(
-                                  SignUpRequested(
-                                    emailController.text,
-                                    usernameController.text,
-                                    passwordController.text,
-                                  ),
-                                );
+                              SignUpRequested(
+                                email: emailController.text,
+                                password: passwordController.text,
+                                username: usernameController.text,
+                              ),
+                            );
                           },
                         )),
                   ],
