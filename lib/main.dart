@@ -33,8 +33,16 @@ class MainApp extends StatelessWidget {
    Widget build(BuildContext context) {
     return RepositoryProvider.value(
       value: _authenticationRepository,
-      child: BlocProvider(
-        create: (_) => AuthBloc(authRepository: _authenticationRepository),
+      child: MultiRepositoryProvider(
+        providers: [
+          RepositoryProvider<AuthBloc>(
+            create:(context) => AuthBloc(authRepository: _authenticationRepository),
+          ),
+          RepositoryProvider<AuthFirebaseServiceImp>(
+            create:(context) => AuthFirebaseServiceImp(),
+          ),
+
+        ],
         child: const AppView(),
       ),
     );
