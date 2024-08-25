@@ -19,5 +19,8 @@ class SignUpRequested extends AuthEvent {
 
   SignUpRequested({ required this.username, required this.email, required this.password});
 }
-
+class VerifyEmailRequested extends AuthEvent {
+  final String email;
+  VerifyEmailRequested({required this.email});
+}
 class SignOutRequested extends AuthEvent {}

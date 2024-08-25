@@ -20,7 +20,7 @@ class AuthAuthenticated extends AuthState {
   @override
   List<Object> get props => [user];
 }
-
+class AuthSentVerify extends  AuthState {}
 class AuthError extends AuthState {
   final String message;
 

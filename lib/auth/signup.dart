@@ -27,9 +27,9 @@ class _SignUpState extends State<SignUp> {
           listener: (context, state) {
           if (state is AuthError) {
             Helper.showMessage(context, state.message);
-          } else if (state is AuthAuthenticated) {
-            print('Authenticated here');
-            Navigator.pushNamed(context, '/home');
+          } else if (state is AuthSentVerify) {
+            Helper.showMessage(context, 'An verification link has been sent to your email');
+            Navigator.pushNamed(context, '/login');
           }else {
             print(state);
           }

@@ -17,13 +17,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthLoading());
       try {
         var userModel = UserModel(email: event.email, username: event.username);
-        var authenticatedUser = await _authRepository.register(userModel, event.password);
-        if(authenticatedUser.isRight()) {
-          emit(AuthError(authenticatedUser.fold((l) => '', (r) => r)));
-          print(authenticatedUser.fold((l) => '', (r) => r));
+        var registeredWithVerify = await _authRepository.register(userModel, event.password);
+        if(registeredWithVerify.isRight()) {
+          emit(AuthError(registeredWithVerify.fold((l) => '', (r) => r)));
+          print(registeredWithVerify.fold((l) => '', (r) => r));
           return;
         }else {        
-          authenticatedUser.leftMap((user) => emit(AuthAuthenticated(user)));
+          add(VerifyEmailRequested(email: event.email));
         }
  
 
@@ -51,6 +51,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthError(e.toString()));
     }
   });
-  
+  on<VerifyEmailRequested>((event,emit) async {
+    try {
+      var authenticatedUser = await _authRepository.sendVerify(event.email);
+      if(authenticatedUser.isRight()) {
+        emit(AuthError(authenticatedUser.fold((l) => '', (r) => r)));
+        print(authenticatedUser.fold((l) => '', (r) => r));
+        print('event error');
+        return;
+      }
+      emit(AuthSentVerify());
+    } catch (e) {
+      print('catch event error');
+      print(e.toString());
+      emit(AuthError(e.toString()));
+    }
+  });
   }
 }
