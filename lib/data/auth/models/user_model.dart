@@ -7,14 +7,14 @@ class UserModel {
 
   UserModel({required this.email,  this.username, this.id});
 
-  UserModel copyWith({
+  factory UserModel.copyWith({
     String? id,
     String? username,
     required String email,
   }) {
     return UserModel(
-      id: id ?? this.id,
-      username: username ?? this.username, 
+      id: id,
+      username: username , 
       email: email, 
     );
   }

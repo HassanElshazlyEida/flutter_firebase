@@ -6,6 +6,8 @@ import 'package:flutter_firebase/bloc/states/auth_state.dart';
 import 'package:flutter_firebase/component/custome_elevated_button.dart';
 import 'package:flutter_firebase/component/helpers/form_helper.dart';
 import 'package:flutter_firebase/component/helpers/helper.dart';
+import 'package:flutter_firebase/data/auth/models/user_model.dart';
+import 'package:flutter_firebase/data/auth/source/auth_firebase_service.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -122,7 +124,28 @@ class _LoginState extends State<Login> {
                           child: CustomElevatedButton(
                             text: 'Sign in with Google',
                             backgroundColor: const Color(0xffC70039),
-                            onPressed: () {},
+                            onPressed: ()  async {
+                              try {
+                                await context.read<AuthFirebaseServiceImp>().signInWithGoogle();
+
+                                BlocProvider.of<AuthBloc>(context).emit(
+                                  AuthAuthenticated(context.read<AuthFirebaseServiceImp>().userModel as UserModel)
+                                );
+
+                                Navigator.pushNamed(context, '/home');
+
+                              } catch (error) {
+
+                                Helper.showMessage(context, 'Failed to sign in: $error');
+                              }
+                              // context.read<AuthFirebaseServiceImp>().signInWithGoogle(context)
+                              // .then((value) => {
+                              //   Navigator.pushNamed(context,'/home'),
+                              //   BlocProvider.of<AuthBloc>(context).emit(AuthAuthenticated(
+                              //     context.read<AuthFirebaseServiceImp>().userModel as UserModel
+                              //   ))
+                              // });
+                            },
                             appendedWidget: Image.asset(
                               'lib/images/google.png',
                               height: 20,
