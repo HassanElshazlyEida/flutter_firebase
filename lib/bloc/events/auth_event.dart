@@ -23,4 +23,9 @@ class VerifyEmailRequested extends AuthEvent {
   final String email;
   VerifyEmailRequested({required this.email});
 }
+class ResetEmailRequested  extends AuthEvent {
+  final String email;
+  ResetEmailRequested({required this.email});
+}
+
 class SignOutRequested extends AuthEvent {}

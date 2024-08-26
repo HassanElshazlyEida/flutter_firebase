@@ -6,6 +6,7 @@ import 'package:flutter_firebase/bloc/states/auth_state.dart';
 import 'package:flutter_firebase/component/custome_elevated_button.dart';
 import 'package:flutter_firebase/component/helpers/form_helper.dart';
 import 'package:flutter_firebase/component/helpers/helper.dart';
+import 'package:flutter_firebase/component/navbar.dart';
 import 'package:flutter_firebase/data/auth/models/user_model.dart';
 import 'package:flutter_firebase/data/auth/source/auth_firebase_service.dart';
 
@@ -30,6 +31,8 @@ class _LoginState extends State<Login> {
             Helper.showMessage(context, state.message);
           } else if (state is AuthAuthenticated) {
             Navigator.pushNamed(context, '/home');
+          } else if (state is AuthSentResetPassword){
+              Helper.showMessage(context, state.message);
           }else {
             print(state);
           }
@@ -44,31 +47,8 @@ class _LoginState extends State<Login> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // create clip path with background blue
-                ClipPath(
-                  clipper: const MyClipper(),
-                  child: Container(
-                    height: 250,
-                    width: double.infinity,
-                    color: const Color(0xff1F41BB),
-                  ),
-                ),
-                Image.asset(
-                  'lib/images/logo.png',
-                  height: 100,
-                  width: 100,
-                ),
-                Container(
-                  margin: const EdgeInsets.only(top: 20, bottom: 50),
-                  child: const SizedBox(
-                    width: 250,
-                    child: Text('Welcome back you’ve been missed!',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        )),
-                  ),
-                ),
+                const Navbar(text: 'Welcome back you’ve been missed!')
+                ,
                 Container(
                   margin:
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -85,11 +65,17 @@ class _LoginState extends State<Login> {
                   children: [
                     Container(
                       margin: const EdgeInsets.only(right: 20),
-                      child: const Text(
-                        'Forgot your password?',
-                        style: TextStyle(
-                            color: Color(0xff1F41BB),
+                      child: TextButton(
+                        onPressed: (){
+                          print('saasd');
+                          Navigator.pushNamed(context, '/reset-password');
+                        },
+                        child: const Text(
+                          'Forgot your password?',
+                          style: TextStyle(
+                              color: Color(0xff1F41BB),
                             fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ),
                   ],
@@ -126,8 +112,10 @@ class _LoginState extends State<Login> {
                             backgroundColor: const Color(0xffC70039),
                             onPressed: ()  async {
                               try {
+                                BlocProvider.of<AuthBloc>(context).emit(AuthLoading());
+                                
                                 await context.read<AuthFirebaseServiceImp>().signInWithGoogle();
-
+                               
                                 BlocProvider.of<AuthBloc>(context).emit(
                                   AuthAuthenticated(context.read<AuthFirebaseServiceImp>().userModel as UserModel)
                                 );
@@ -135,16 +123,9 @@ class _LoginState extends State<Login> {
                                 Navigator.pushNamed(context, '/home');
 
                               } catch (error) {
-
-                                Helper.showMessage(context, 'Failed to sign in: $error');
+                                print('$error');
+                                Helper.showMessage(context, 'Failed to sign in');
                               }
-                              // context.read<AuthFirebaseServiceImp>().signInWithGoogle(context)
-                              // .then((value) => {
-                              //   Navigator.pushNamed(context,'/home'),
-                              //   BlocProvider.of<AuthBloc>(context).emit(AuthAuthenticated(
-                              //     context.read<AuthFirebaseServiceImp>().userModel as UserModel
-                              //   ))
-                              // });
                             },
                             appendedWidget: Image.asset(
                               'lib/images/google.png',

@@ -21,6 +21,15 @@ class AuthAuthenticated extends AuthState {
   List<Object> get props => [user];
 }
 class AuthSentVerify extends  AuthState {}
+class AuthSentResetPassword extends  AuthState {
+  final String message;
+
+  AuthSentResetPassword(this.message);
+
+  @override
+  List<Object> get props => [message];
+}
+
 class AuthError extends AuthState {
   final String message;
 

@@ -7,6 +7,7 @@ import 'package:flutter_firebase/component/custom_text_field.dart';
 import 'package:flutter_firebase/component/custome_elevated_button.dart';
 import 'package:flutter_firebase/component/helpers/form_helper.dart';
 import 'package:flutter_firebase/component/helpers/helper.dart';
+import 'package:flutter_firebase/component/navbar.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -23,6 +24,7 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+ 
     body: BlocConsumer<AuthBloc, AuthState>(
           listener: (context, state) {
           if (state is AuthError) {
@@ -44,31 +46,8 @@ class _SignUpState extends State<SignUp> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // create clip path with background blue
-                ClipPath(
-                  clipper: const MyClipper(),
-                  child: Container(
-                    height: 250,
-                    width: double.infinity,
-                    color: const Color(0xff1F41BB),
-                  ),
-                ),
-                Image.asset(
-                  'lib/images/logo.png',
-                  height: 100,
-                  width: 100,
-                ),
-                Container(
-                  margin: const EdgeInsets.only(top: 10, bottom: 50),
-                  child: const SizedBox(
-                    width: 250,
-                    child: Text('Create an account to get all features',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        )),
-                  ),
-                ),
+                const Navbar(text: 'Create an account to get all features'),
+
                 Container(
                   margin:
                       const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -146,20 +125,3 @@ class _SignUpState extends State<SignUp> {
   }
 }
 
-class MyClipper extends CustomClipper<Path> {
-  const MyClipper();
-
-  @override
-  Path getClip(Size size) {
-    final path = Path();
-    path.lineTo(0, size.height - 50);
-    path.quadraticBezierTo(
-        size.width / 2, size.height, size.width, size.height - 50);
-    path.lineTo(size.width, 0);
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
-}

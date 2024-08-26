@@ -1,7 +1,5 @@
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_firebase/component/helpers/helper.dart';
 import 'package:flutter_firebase/data/auth/models/user_model.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -9,6 +7,9 @@ abstract class AuthFirebaseService {
   Future<Either<bool,String>> register(UserModel user,String password);
   Future<Either<UserModel,String>> login(String email,String password);
   Future<Either<bool,String>> sendVerify(String email);
+  Future<UserCredential> signInWithGoogle();
+  Future<void> resetPassword(String email);
+  
   Stream<User?> get authStateChanges;
   User? get user;
   UserModel? get userModel;
@@ -16,6 +17,20 @@ abstract class AuthFirebaseService {
 
 class AuthFirebaseServiceImp implements AuthFirebaseService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
+  @override
+  Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
+  @override
+  User? get user => _firebaseAuth.currentUser;
+  @override 
+  UserModel? get userModel {
+    User? currentUser = _firebaseAuth.currentUser;
+    if(currentUser != null){
+      return UserModel.copyWith(email: currentUser.email as String ,id: _firebaseAuth.currentUser!.uid);
+    }else {
+      return null;
+    }
+  }
 
   @override
   Future<Either<bool,String>> register(UserModel user,String password) async {
@@ -79,6 +94,7 @@ class AuthFirebaseServiceImp implements AuthFirebaseService {
       return right('Error sending email verification ${e.toString()}');
     }
   }
+  @override
   Future<UserCredential> signInWithGoogle() async {
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
@@ -91,19 +107,10 @@ class AuthFirebaseServiceImp implements AuthFirebaseService {
 
     return await _firebaseAuth.signInWithCredential(credential);
   }
-
+  
   @override
-  Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
-  @override
-  User? get user => _firebaseAuth.currentUser;
-  @override 
-  UserModel? get userModel {
-    User? currentUser = _firebaseAuth.currentUser;
-    if(currentUser != null){
-      return UserModel.copyWith(email: currentUser.email as String ,id: _firebaseAuth.currentUser!.uid);
-    }else {
-      return null;
-    }
+  Future<void> resetPassword(String email) async {
+    _firebaseAuth.sendPasswordResetEmail(email: email);
   }
 
   
