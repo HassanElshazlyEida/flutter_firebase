@@ -7,6 +7,8 @@ import 'package:flutter_firebase/auth/signup.dart';
 import 'package:flutter_firebase/bloc/auth/auth_bloc.dart';
 import 'package:flutter_firebase/bloc/observers/global_observer.dart';
 import 'package:flutter_firebase/data/auth/source/auth_firebase_service.dart';
+import 'package:flutter_firebase/data/category/source/category_firestore_service.dart';
+import 'package:flutter_firebase/pages/create_category.dart';
 import 'package:flutter_firebase/pages/home.dart';
 
 void main() async {
@@ -42,7 +44,9 @@ class MainApp extends StatelessWidget {
           RepositoryProvider<AuthFirebaseServiceImp>(
             create:(context) => AuthFirebaseServiceImp(),
           ),
-
+          RepositoryProvider<CategoryService>(
+            create: (context) => CategoryService(),
+          )
         ],
         child: const AppView(),
       ),
@@ -62,6 +66,7 @@ class AppView extends StatelessWidget {
         '/signup': (context) =>  const SignUp(),
         '/home': (context) => const Home(),
         '/reset-password':(context) => const  ResetPassword(),
+        '/create-category':(context) => const CreateCategory()
       },
     );
   }
