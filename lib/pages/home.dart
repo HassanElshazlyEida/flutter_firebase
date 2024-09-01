@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_firebase/bloc/auth/auth_bloc.dart';
 import 'package:flutter_firebase/bloc/states/auth_state.dart';
+import 'package:flutter_firebase/component/delete_dialog.dart';
 import 'package:flutter_firebase/component/helpers/helper.dart';
 import 'package:flutter_firebase/data/category/source/category_firestore_service.dart';
 
@@ -16,16 +17,19 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
 
   List categories = [];
-
+  bool isLoading = true;
   getCategories() async {
     QuerySnapshot querySnapshot = await context.read<CategoryService>().all();
+    isLoading = false;
     setState(() {
       categories.addAll(querySnapshot.docs);
+
     });
   }
   @override
   void initState(){
     getCategories();
+
     super.initState();
   }
 
@@ -61,9 +65,9 @@ class _HomeState extends State<Home> {
               title: const Text('Home'),
               automaticallyImplyLeading: false,
             ),
-            body:  GridView.builder(
+            body: isLoading == true ?   const Center(child: CircularProgressIndicator()) : GridView.builder(
               itemCount: categories.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,mainAxisExtent: 160),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,mainAxisExtent: 200),
               itemBuilder: (context, index) {
                 return  Card(
                 child: Container(
@@ -71,7 +75,27 @@ class _HomeState extends State<Home> {
                   child: Column(
                     children: [
                       Image.asset('lib/images/folder.png',height: 100,),
-                      Text("${categories[index]['name']}")
+                      Text("${categories[index]['name']}"),
+                      TextButton(onPressed: (){
+                        showDialog(context: context, builder: (context){
+                          return DeleteDialog(
+                            onSave:(bool answer) async {
+                              try {
+                                await context.read<CategoryService>().delete(categories[index].id);
+                             
+                                Helper.showMessage(context, "${categories[index]['name']} has been removed");
+
+                                setState(() {
+                                  categories.removeAt(index);
+                                });
+                              }catch (error) {
+                                Helper.showMessage(context, 'An error occur');
+                              } 
+                            
+                            },
+                          );
+                        });
+                      }, child: const Icon(Icons.delete,color: Colors.red,))
                     ],
                   ),
                 ),
