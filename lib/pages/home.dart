@@ -65,7 +65,27 @@ class _HomeState extends State<Home> {
               title: const Text('Home'),
               automaticallyImplyLeading: false,
             ),
-            body: isLoading == true ?   const Center(child: CircularProgressIndicator()) : GridView.builder(
+            body: isLoading == true ?   const Center(child: CircularProgressIndicator()) : 
+             categories.isEmpty
+              ?  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset('lib/images/empty.png',height: 200,),
+                       Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextButton(
+                        child: const Text("Create new category",
+                        style:  TextStyle(color: Colors.blue,fontSize: 20)),
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/create-category');
+                        }),
+                       const  Icon(Icons.navigate_next,color:Colors.blue),
+                      ],
+                      )
+                    ],
+                  )
+              :GridView.builder(
               itemCount: categories.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,mainAxisExtent: 200),
               itemBuilder: (context, index) {
