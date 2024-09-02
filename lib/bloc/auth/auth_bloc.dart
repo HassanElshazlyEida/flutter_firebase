@@ -76,6 +76,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthError(e.toString()));
     }
   });
+  on<SignOutRequested>((event,emit) async {
+    try {
+      emit(AuthLoading());
+      await _authRepository.logout();
+      emit(AuthUnAuthenticated());
+    } catch (e) {
+      emit(AuthError(e.toString()));
+    }
+  });
 
   }
 }

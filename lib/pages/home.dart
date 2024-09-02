@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_firebase/bloc/auth/auth_bloc.dart';
+import 'package:flutter_firebase/bloc/events/auth_event.dart';
 import 'package:flutter_firebase/bloc/states/auth_state.dart';
 import 'package:flutter_firebase/component/delete_dialog.dart';
 import 'package:flutter_firebase/component/helpers/helper.dart';
@@ -63,6 +64,11 @@ class _HomeState extends State<Home> {
             ),
             appBar: AppBar(
               title: const Text('Home'),
+              actions: [
+                IconButton(onPressed: (){
+                  BlocProvider.of<AuthBloc>(context).add(SignOutRequested());
+                }, icon: const Icon(Icons.logout))
+              ],
               automaticallyImplyLeading: false,
             ),
             body: isLoading == true ?   const Center(child: CircularProgressIndicator()) : 

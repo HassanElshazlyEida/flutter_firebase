@@ -6,6 +6,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 abstract class AuthFirebaseService {
   Future<Either<bool,String>> register(UserModel user,String password);
   Future<Either<UserModel,String>> login(String email,String password);
+  Future<Either<bool,String>> logout();
   Future<Either<bool,String>> sendVerify(String email);
   Future<UserCredential> signInWithGoogle();
   Future<void> resetPassword(String email);
@@ -111,6 +112,23 @@ class AuthFirebaseServiceImp implements AuthFirebaseService {
   @override
   Future<void> resetPassword(String email) async {
     _firebaseAuth.sendPasswordResetEmail(email: email);
+  }
+  
+  @override
+  Future<Either<bool, String>> logout() async{
+     try {
+      // login with firebase
+      return await _firebaseAuth.signOut()
+      .catchError((onError) =>  right('Error logging out $onError'))
+      .then((value) => left(true));
+      
+    }  on FirebaseAuthException catch (e) {
+      return right(e.message.toString());
+    }
+    catch (e) {
+      print(e.toString());
+      return right('Error logging out ${e.toString()}');
+    }
   }
 
   
