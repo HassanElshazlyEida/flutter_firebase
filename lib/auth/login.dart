@@ -125,6 +125,9 @@ class _LoginState extends State<Login> {
                               } catch (error) {
                                 print('$error');
                                 Helper.showMessage(context, 'Failed to sign in');
+                                
+                                BlocProvider.of<AuthBloc>(context).emit(AuthUnAuthenticated());
+
                               }
                             },
                             appendedWidget: Image.asset(
