@@ -10,18 +10,20 @@ abstract class CategoryFirestoreService {
 }
 
 class CategoryService implements CategoryFirestoreService {
+    final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final CollectionReference _categories = FirebaseFirestore.instance.collection('categories');
   
   @override
   Future<void> create(String name) async {
     _categories.add({
-      'name': name
+      'name': name,
+      'id': _firebaseAuth.currentUser!.uid
     })
     .then((value) => value);
   }
   @override
   Future<QuerySnapshot> all(){
-    return _categories.get();
+    return _categories.where('id', isEqualTo: _firebaseAuth.currentUser!.uid).get();
   }
   
   @override
